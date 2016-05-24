@@ -1,10 +1,16 @@
 package com.sameer.myapp.egen_be_challenge.model;
-
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
+import org.bson.types.ObjectId;
+@Entity
 public class User {
 	private String id;
 	private String firstName;
 	private String lastName;
 	private String email;
+	@Embedded
 	private Address	address;
 	private String dateCreated;
 	public User(String id2) {
@@ -58,6 +64,7 @@ public class User {
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
 	}
+	@Embedded
 	private Company company;
 	private String profilePic;
 	
