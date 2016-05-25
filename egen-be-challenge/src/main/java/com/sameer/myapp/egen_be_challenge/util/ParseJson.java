@@ -39,20 +39,22 @@ public class ParseJson {
 		JsonElement jelement = new JsonParser().parse(str);
 		JsonObject  jobject = jelement.getAsJsonObject();
 		Map<String,String> map=new HashMap<>();
-		if(jobject.get("Company") != null){
+		if(jobject.get("company") != null){
 			JsonObject  jobjectCompany = jobject.get("Company").getAsJsonObject();
+			jobject.remove("company");
 			Set<Entry<String, JsonElement>> entrySetcompany = jobjectCompany.entrySet();
 			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
-				map.put("Company"+"."+entry.getKey(),entry.getValue().toString());
+				map.put("company"+"."+entry.getKey(),entry.getValue().toString());
 			}
 		}
 
 
-		if(jobject.get("Address") != null){
-			JsonObject  jobjectAddress = jobject.get("Address").getAsJsonObject();
+		if(jobject.get("address") != null){
+			JsonObject  jobjectAddress = jobject.get("address").getAsJsonObject();
+			jobject.remove("address");
 			Set<Entry<String, JsonElement>> entrySetAddress = jobjectAddress.entrySet();
 			for(Map.Entry<String, JsonElement> entry : entrySetAddress) {
-				map.put("Address"+"."+entry.getKey(),entry.getValue().toString());
+				map.put("address"+"."+entry.getKey(),entry.getValue().toString());
 			}
 		}
 		Set<Entry<String, JsonElement>> entrySet = jobject.entrySet();
@@ -81,10 +83,10 @@ public class ParseJson {
 		}
 		JsonElement jelement = new JsonParser().parse(str);
 		JsonObject  jobject = jelement.getAsJsonObject();
-		if(jobject.get("Company") != null){
-			JsonObject  jobjectCompany = jobject.get("Company").getAsJsonObject();
+		if(jobject.get("company") != null){
+			JsonObject  jobjectCompany = jobject.get("company").getAsJsonObject();
 			Set<Entry<String, JsonElement>> entrySetcompany = jobjectCompany.entrySet();
-			jobject.remove("Company");
+			jobject.remove("company");
 			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
 				if(!company.contains(entry.getKey())){
 					return false;
@@ -92,10 +94,10 @@ public class ParseJson {
 			}
 		}
 
-		if(jobject.get("Address") != null){
-			JsonObject  jobjectAddress = jobject.get("Address").getAsJsonObject();
+		if(jobject.get("address") != null){
+			JsonObject  jobjectAddress = jobject.get("address").getAsJsonObject();
 			Set<Entry<String, JsonElement>> entrySetcompany = jobjectAddress.entrySet();
-			jobject.remove("Address");
+			jobject.remove("address");
 			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
 				if(!address.contains(entry.getKey())){
 					return false;
