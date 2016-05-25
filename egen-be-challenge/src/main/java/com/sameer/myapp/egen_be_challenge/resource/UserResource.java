@@ -20,8 +20,9 @@ public class UserResource {
 		}); 
 		
 		
-		put("/users","application/json", (request, response) -> {
-			return user.updateUser(request.body()); 
+		put("/users/:id","application/json", (request, response) -> {
+			String id=request.params(":id");
+			return user.updateUser(request.body(),id); 
 		}); 
 		get("/users", "application/json", (request, response) -> {
 			return user.getAllUsers();

@@ -49,11 +49,11 @@ public class UserService {
 			return "404: UserId not present";	
 		}
 	}
-	public String updateUser(String id){
+	public String updateUser(String body,String id){
 		ParseJson parseJson=new ParseJson();
-		if(parseJson.validate(id)){
-			String uniqueid=parseJson.getValue(id, "id");
-			Bson filter=new Document("id",uniqueid);
+		if(parseJson.validate(body)){
+//			String uniqueid=parseJson.getValue(id, "id");
+			Bson filter=new Document("id",id);
 			Document doc=coll.find(filter).first();
 			if(doc!=null){
 				Map<String,String> map=parseJson.getKeys(id);

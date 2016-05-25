@@ -74,7 +74,7 @@ public class UserServicetest {
 		jsonObject1.addProperty("id", "1630215c-2608-44b9-aad4-9d56d8aafd4klwxyz");
 		jsonObject1.add("address", innerObject1);
 		jsonObject1.addProperty(  "lastName", "Nadgouda1");
-		String result=userservice.updateUser(jsonObject1.toString());
+		String result=userservice.updateUser(jsonObject1.toString(),"1630215c-2608-44b9-aad4-9d56d8aafd4klwxyz");
 		JsonObject result1 = (new JsonParser()).parse(result).getAsJsonObject();
 		assertEquals(result1, jsonObject);
 	}
