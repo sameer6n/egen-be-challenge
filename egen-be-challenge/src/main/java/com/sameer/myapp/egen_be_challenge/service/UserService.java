@@ -1,6 +1,9 @@
 package com.sameer.myapp.egen_be_challenge.service;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -14,8 +17,6 @@ import com.sameer.myapp.egen_be_challenge.model.User;
 import com.sameer.myapp.egen_be_challenge.util.JSONUtils;
 import com.sameer.myapp.egen_be_challenge.util.ParseJson;
 public class UserService {
-
-
 	MongoClient client=new MongoClient();
 	MongoDatabase db=client.getDatabase("new-test");
 	MongoCollection<Document> coll=db.getCollection("things");
@@ -28,55 +29,67 @@ public class UserService {
 		System.out.println(json);
 		return json;
 	}
-	
-	public User getUser(String id){
+
+	public String getUser(String id){
 		Bson filter=new Document("id",id);
 		Document obj=(Document) coll.find(filter).first();
 		if(obj!=null){
-			User user=gson.fromJson(obj.toJson(),User.class);
-			return user;
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json = gson.toJson(obj);
+			System.out.println(json);
+			return json;
 		}
 		else{
-			return null;	
+			return "404: UserId not present";	
 		}
 	}
-	public int updateUser(String id){
-		if(JSONUtils.isJSONValid(id)){
-			ParseJson parseJson=new ParseJson();
+	public String updateUser(String id){
+		ParseJson parseJson=new ParseJson();
+		if(parseJson.validate(id)){
 			String uniqueid=parseJson.getValue(id, "id");
 			Bson filter=new Document("id",uniqueid);
 			Document doc=coll.find(filter).first();
 			if(doc!=null){
-				coll.deleteOne(filter);
-				Document user1=Document.parse(id) ;
-				coll.insertOne(user1);
-				return 200;
+				Map<String,String> map=parseJson.getKeys(id);
+				for (String key : map.keySet()) {
+					coll.updateOne(filter, new Document("$set",new Document(key,map.get(key))));
+				}
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				String json = gson.toJson(doc);
+				System.out.println(json);
+				return json;
 			}
 			else{
-				return 404;
+				return "404: Userid not present";
 			}
-		}
-		return 415;
-	}
-	public int removeUser(String id){
-		Bson filter=new Document("id",id);
-		Document doc=coll.find(filter).first();
-		if(doc!=null){
-			coll.deleteOne(filter);
-			return 200;
-		}
-		else{
-			return 404;
-		}
-	}
-	public int adduser(String id){
-		if(JSONUtils.isJSONValid(id)){
-			Document user1=Document.parse(id) ;
-			coll.insertOne(user1);
-			return 200;
+
 		}else{
-			return 415;
+			return "400: Bad input format";
 		}
+
+}
+public String removeUser(String id){
+	Bson filter=new Document("id",id);
+	Document doc=coll.find(filter).first();
+	if(doc!=null){
+		coll.deleteOne(filter);
+		return "Success";
 	}
+	else{
+		return "404: Userid not present";
+	}
+}
+public String adduser(String id){
+	if(JSONUtils.isJSONValid(id)){
+		Document user1=Document.parse(id) ;
+		coll.insertOne(user1);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(user1);
+		System.out.println(json);
+		return json;
+	}else{
+		return "Not a valid String";
+	}
+}
 
 }

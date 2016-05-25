@@ -1,11 +1,16 @@
 package com.sameer.myapp.egen_be_challenge.util;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import org.json.*;
+import org.json.JSONObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sameer.myapp.egen_be_challenge.model.Address;
+import com.sameer.myapp.egen_be_challenge.model.User;
 public class ParseJson {
 	public String getValue(String str,String key){
 
@@ -13,16 +18,93 @@ public class ParseJson {
 		String value = obj.getString(key);
 		return value;
 	}
-	public Boolean validate(String str,Set<String> db){
+	public Map<String,String> getKeys(String str){
+		Field[] fields = User.class.getDeclaredFields();
+		Field[] addressfields = Address.class.getDeclaredFields();
+		Field[] companyfields = Address.class.getDeclaredFields();
+		Set<String> user=new HashSet<>();
+		Set<String> address=new HashSet<>();
+		Set<String> company=new HashSet<>();
+
+		for(Field field:fields){
+			user.add(field.getName());
+		}
+
+		for(Field addressfield:addressfields){
+			address.add(addressfield.getName());
+		}
+		for(Field companyfield:companyfields){
+			company.add(companyfield.getName());
+		}
 		JsonElement jelement = new JsonParser().parse(str);
 		JsonObject  jobject = jelement.getAsJsonObject();
-		Set<Map.Entry<String, JsonElement>> entrySet = jobject.entrySet();
-		Set <String> st=new HashSet<>();
-		for(Map.Entry<String, JsonElement> entry : entrySet) {
-			st.add(entry.getKey());
+		Map<String,String> map=new HashMap<>();
+		if(jobject.get("Company") != null){
+			JsonObject  jobjectCompany = jobject.get("Company").getAsJsonObject();
+			Set<Entry<String, JsonElement>> entrySetcompany = jobjectCompany.entrySet();
+			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
+				map.put("Company"+"."+entry.getKey(),entry.getValue().toString());
+			}
 		}
-		for(String key:st){
-			if(!db.contains(key)){
+
+
+		if(jobject.get("Address") != null){
+			JsonObject  jobjectAddress = jobject.get("Address").getAsJsonObject();
+			Set<Entry<String, JsonElement>> entrySetAddress = jobjectAddress.entrySet();
+			for(Map.Entry<String, JsonElement> entry : entrySetAddress) {
+				map.put("Address"+"."+entry.getKey(),entry.getValue().toString());
+			}
+		}
+		Set<Entry<String, JsonElement>> entrySet = jobject.entrySet();
+		for(Map.Entry<String, JsonElement> entry : entrySet) {
+			map.put(entry.getKey(),entry.getValue().toString());
+		}
+		return map;
+	}
+	public Boolean validate(String str){
+		Field[] fields = User.class.getDeclaredFields();
+		Field[] addressfields = Address.class.getDeclaredFields();
+		Field[] companyfields = Address.class.getDeclaredFields();
+		Set<String> user=new HashSet<>();
+		Set<String> address=new HashSet<>();
+		Set<String> company=new HashSet<>();
+
+		for(Field field:fields){
+			user.add(field.getName());
+		}
+
+		for(Field addressfield:addressfields){
+			address.add(addressfield.getName());
+		}
+		for(Field companyfield:companyfields){
+			company.add(companyfield.getName());
+		}
+		JsonElement jelement = new JsonParser().parse(str);
+		JsonObject  jobject = jelement.getAsJsonObject();
+		if(jobject.get("Company") != null){
+			JsonObject  jobjectCompany = jobject.get("Company").getAsJsonObject();
+			Set<Entry<String, JsonElement>> entrySetcompany = jobjectCompany.entrySet();
+			jobject.remove("Company");
+			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
+				if(!company.contains(entry.getKey())){
+					return false;
+				}
+			}
+		}
+
+		if(jobject.get("Address") != null){
+			JsonObject  jobjectAddress = jobject.get("Address").getAsJsonObject();
+			Set<Entry<String, JsonElement>> entrySetcompany = jobjectAddress.entrySet();
+			jobject.remove("Address");
+			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
+				if(!address.contains(entry.getKey())){
+					return false;
+				}
+			}
+		}
+		Set<Entry<String, JsonElement>> entrySet = jobject.entrySet();
+		for(Map.Entry<String, JsonElement> entry : entrySet) {
+			if(!user.contains(entry.getKey()) ){
 				return false;
 			}
 		}

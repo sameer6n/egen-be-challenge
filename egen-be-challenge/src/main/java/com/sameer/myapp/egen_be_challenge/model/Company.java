@@ -1,8 +1,6 @@
 package com.sameer.myapp.egen_be_challenge.model;
 
-import org.mongodb.morphia.annotations.Embedded;
 
-@Embedded
 public class Company {
 	private String name;
 	private String website;

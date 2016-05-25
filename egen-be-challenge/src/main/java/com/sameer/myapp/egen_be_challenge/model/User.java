@@ -13,7 +13,7 @@ public class User {
 	@Embedded
 	private Address	address;
 	private String dateCreated;
-	public User(String id2) {
+	public User() {
 		// TODO Auto-generated constructor stub
 	}
 	public String getId() {
@@ -66,6 +66,15 @@ public class User {
 	}
 	@Embedded
 	private Company company;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", address=" + address + ", dateCreated=" + dateCreated + ", company=" + company + ", profilePic="
+				+ profilePic + "]";
+	}
 	private String profilePic;
 	
 }
