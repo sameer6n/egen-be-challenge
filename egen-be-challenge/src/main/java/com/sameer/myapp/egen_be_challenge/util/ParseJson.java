@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.json.JSONObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,9 +12,10 @@ import com.sameer.myapp.egen_be_challenge.model.Address;
 import com.sameer.myapp.egen_be_challenge.model.User;
 public class ParseJson {
 	public String getValue(String str,String key){
-
-		JSONObject obj = new JSONObject(str);
-		String value = obj.getString(key);
+		JsonElement jelement = new JsonParser().parse(str);
+	    JsonObject  jobject = jelement.getAsJsonObject();
+		//JSONObject obj = new JSONObject(str);
+		String value = jobject.get(key).getAsString();
 		return value;
 	}
 	public Map<String,String> getKeys(String str){
@@ -40,26 +40,25 @@ public class ParseJson {
 		JsonObject  jobject = jelement.getAsJsonObject();
 		Map<String,String> map=new HashMap<>();
 		if(jobject.get("company") != null){
-			JsonObject  jobjectCompany = jobject.get("Company").getAsJsonObject();
+			
+			JsonObject  jobjectCompany = jobject.get("company").getAsJsonObject();
 			jobject.remove("company");
 			Set<Entry<String, JsonElement>> entrySetcompany = jobjectCompany.entrySet();
 			for(Map.Entry<String, JsonElement> entry : entrySetcompany) {
-				map.put("company"+"."+entry.getKey(),entry.getValue().toString());
+				map.put("company"+"."+entry.getKey(),entry.getValue().getAsString());
 			}
 		}
-
-
 		if(jobject.get("address") != null){
 			JsonObject  jobjectAddress = jobject.get("address").getAsJsonObject();
 			jobject.remove("address");
 			Set<Entry<String, JsonElement>> entrySetAddress = jobjectAddress.entrySet();
 			for(Map.Entry<String, JsonElement> entry : entrySetAddress) {
-				map.put("address"+"."+entry.getKey(),entry.getValue().toString());
+				map.put("address"+"."+entry.getKey(),entry.getValue().getAsString());
 			}
 		}
 		Set<Entry<String, JsonElement>> entrySet = jobject.entrySet();
 		for(Map.Entry<String, JsonElement> entry : entrySet) {
-			map.put(entry.getKey(),entry.getValue().toString());
+			map.put(entry.getKey(),entry.getValue().getAsString());
 		}
 		return map;
 	}

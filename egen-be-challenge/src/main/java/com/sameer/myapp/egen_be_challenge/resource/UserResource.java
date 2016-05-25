@@ -13,7 +13,7 @@ public class UserResource {
 			String id=request.params(":id");
 			
 			return user.getUser(id);
-		}, new JsonTransformer());
+		});
 		
 		post("/users","application/json", (request, response) -> {
 			return user.adduser(request.body()); 
